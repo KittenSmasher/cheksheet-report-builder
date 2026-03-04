@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report Approval</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="approval.css" />
+</head>
+
+<body>
+
+    <div class="app-wrap">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <div class="brand">Checksheet <span>Approval</span></div>
+                <div class="status-badge" id="statusBadge"></div>
+            </div>
+            <div class="topbar-right">
+                <button class="btn btn-ghost" id="exportBtn" onclick="exportPDF()" disabled>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- REPORT SUMMARY HEADER -->
+        <div class="report-header" id="reportHeader" style="display:none;">
+            <div class="meta-group">
+                <div class="meta-item">
+                    <span class="meta-label">Report Title</span>
+                    <span class="meta-value" id="metaTitle">—</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Period</span>
+                    <span class="meta-value" id="metaPeriod">—</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Prepared By</span>
+                    <span class="meta-value" id="metaPreparedBy">—</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Submitted At</span>
+                    <span class="meta-value" id="metaSubmittedAt">—</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Total Records</span>
+                    <span class="meta-value" id="metaTotalRecords">—</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHECKSHEET TABLE -->
+        <div class="content">
+            <div class="table-wrap">
+                <table id="mainTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Inspector</th>
+                            <th>Location</th>
+                            <th>Area Type</th>
+                            <th>Cleanliness</th>
+                            <th>Equipment</th>
+                            <th>Lightning</th>
+                            <th>Signage</th>
+                            <th>Obstruction</th>
+                            <th>Attachment</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- APPROVAL ACTION PANEL -->
+        <div class="action-panel" id="actionPanel" style="display:none;">
+            <div class="rejection-wrap" id="rejectionWrap" style="display:none;">
+                <label class="rejection-label" for="rejectionReason">
+                    Rejection Reason <span class="required">*</span>
+                </label>
+                <textarea id="rejectionReason" class="rejection-input"
+                    placeholder="Please explain why this report is being rejected…" rows="2"></textarea>
+            </div>
+            <div class="panel-row">
+                <div class="panel-info" id="panelInfo"></div>
+                <div class="panel-btns">
+                    <button class="btn btn-reject" id="rejectBtn" onclick="handleReject()">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                        Reject
+                    </button>
+                    <button class="btn btn-approve" id="approveBtn" onclick="handleApprove()">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Approve
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DECIDED BANNER — shown after approve/reject -->
+        <div class="decided-banner" id="decidedBanner" style="display:none;">
+            <div class="decided-inner" id="decidedInner"></div>
+        </div>
+
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast-wrap" id="toastWrap"></div>
+
+    <script src="approval.js"></script>
+</body>
+
+</html>

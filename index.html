@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checksheet Report Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <div class="app-wrap">
+
+        <!-- ── TOP BAR ── -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <div class="brand">Checksheet <span>Report Builder</span></div>
+                <div class="badge-count" id="selCount">0 selected</div>
+            </div>
+            <div class="topbar-right">
+                <button class="btn btn-ghost" onclick="clearSelection()">Clear</button>
+                <button class="btn btn-ghost" onclick="selectAll()">Select All</button>
+                <button class="btn btn-primary" id="compileBtn" onclick="openPreview()" disabled>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14,2 14,8 20,8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                    Compile Report
+                </button>
+            </div>
+        </div>
+
+        <!-- ── FILTER BAR ── -->
+        <div class="filter-bar">
+            <span class="filter-label">Filter</span>
+            <input class="filter-input" id="fDate" type="date" onchange="applyFilters()" title="Filter by date" />
+            <select class="filter-select" id="fLocation" onchange="applyFilters()">
+                <option value="">All Locations</option>
+            </select>
+            <select class="filter-select" id="fInspector" onchange="applyFilters()">
+                <option value="">All Inspectors</option>
+            </select>
+            <select class="filter-select" id="fStatus" onchange="applyFilters()">
+                <option value="">All Statuses</option>
+                <option value="ok">All OK</option>
+                <option value="nok">Has Issue</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" onclick="resetFilters()">Reset</button>
+        </div>
+
+        <!-- ── MAIN TABLE ── -->
+        <div class="content">
+            <div class="table-wrap">
+                <table id="mainTable">
+                    <thead>
+                        <tr>
+                            <th class="cb-cell">
+                                <div class="custom-cb" id="masterCb" onclick="toggleMaster()"
+                                    title="Select / deselect all visible">
+                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#fff"
+                                        stroke-width="2">
+                                        <polyline points="1.5,5 3.8,7.5 8.5,2.5" />
+                                    </svg>
+                                </div>
+                            </th>
+                            <th class="sortable" onclick="sortTable('date')">Date <span class="sort-icon">↕</span></th>
+                            <th class="sortable" onclick="sortTable('inspector_name')">Inspector <span
+                                    class="sort-icon">↕</span></th>
+                            <th class="sortable" onclick="sortTable('location_name')">Location <span
+                                    class="sort-icon">↕</span></th>
+                            <th>Area Type</th>
+                            <th>Cleanliness</th>
+                            <th>Equipment</th>
+                            <th>Lightning</th>
+                            <th>Signage</th>
+                            <th>Obstruction</th>
+                            <th>Attachment</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Rows injected by checksheet.js -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── BOTTOM ACTION PANEL ── -->
+        <div class="bottom-panel">
+            <div class="selection-info" id="selInfo">Select rows to compile into a report</div>
+        </div>
+
+    </div><!-- /.app-wrap -->
+
+    <!-- ── COMPILE / PREVIEW MODAL ── -->
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-title">Compile Report Preview</div>
+                    <div class="modal-sub" id="previewSubtitle">— records selected</div>
+                </div>
+                <button class="btn btn-ghost btn-icon" onclick="closePreview()">✕</button>
+            </div>
+            <div class="modal-body">
+
+                <!-- Report metadata inputs -->
+                <div class="preview-meta">
+                    <div class="meta-card">
+                        <label for="reportTitle">Report Title</label>
+                        <input type="text" id="reportTitle" value="Checksheet Inspection Report" />
+                    </div>
+                    <div class="meta-card">
+                        <label for="reportPeriod">Report Period</label>
+                        <input type="text" id="reportPeriod" placeholder="e.g. March 2025" />
+                    </div>
+                    <div class="meta-card">
+                        <label for="reportPrepBy">Prepared By</label>
+                        <input type="text" id="reportPrepBy" placeholder="Your name" />
+                    </div>
+                </div>
+
+                <!-- Selected rows preview -->
+                <div class="preview-table-wrap">
+                    <table class="preview-table" id="previewTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Inspector</th>
+                                <th>Location</th>
+                                <th>Area Type</th>
+                                <th>Cleanliness</th>
+                                <th>Equipment</th>
+                                <th>Lightning</th>
+                                <th>Signage</th>
+                                <th>Obstruction</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="previewBody"></tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closePreview()">Cancel</button>
+                <button class="btn btn-ghost" onclick="submitToOfficeless()">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                    </svg>
+                    Submit for Approval
+                </button>
+                <button class="btn btn-primary" onclick="exportPDF()">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── TOAST CONTAINER ── -->
+    <div class="toast-wrap" id="toastWrap"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
